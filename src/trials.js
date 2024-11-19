@@ -1,7 +1,26 @@
 import jsPsychFullscreen from '@jspsych/plugin-fullscreen'
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response'
 import PreloadPlugin from '@jspsych/plugin-preload'
+import AudioButtonResponsePlugin from '@jspsych/plugin-audio-button-response'
 import { genTaskTrials } from './taskTrials'
+
+const genAdjustVolumeTrial = () => {
+  const adjustVolumeTrial = {
+    type: AudioButtonResponsePlugin,
+    stimulus: 'assets/test/volTest.wav',
+    prompt: `<p>ボリュームを調節してください</p>`,
+    choices: ['もう一度再生する', '完了'],
+    trial_ends_after_audio: false,
+  }
+  const adjutVolumeLoop = {
+    timeline: [adjustVolumeTrial],
+    loop_function: (data) => {
+      if (data.values()[0].response === 0) return true
+      return false
+    },
+  }
+  return adjutVolumeLoop
+}
 
 export const genPreloadTrial = (assetPaths) => {
   const preload = {
@@ -48,10 +67,11 @@ export const buildTimeline = (jsPsych, resultFileName, assetPaths) => {
   const preload = genPreloadTrial(assetPaths)
   const welcome = genWelcomeTrial(resultFileName)
   const fullscreen = genFullScreenTrial()
+  const adjutVolumeLoop = genAdjustVolumeTrial()
   const taskTrials = genTaskTrials(jsPsych, assetPaths)
   const endMessage = genEndMessage(resultFileName)
 
-  let timeline = [preload, welcome, fullscreen]
+  let timeline = [preload, welcome, fullscreen, adjutVolumeLoop]
   timeline = timeline.concat(taskTrials)
   timeline.push(endMessage)
   return timeline

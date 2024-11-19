@@ -61,7 +61,10 @@ const genTaskBlock = (stimPath, stimId, stimLength) => {
  * @returns
  */
 export const genTaskTrials = (jsPsych, assetPaths) => {
-  const stimData = jsPsych.randomization.factorial([assetPaths.audio], 1).map((x) => x[0])
+  const stimData = jsPsych.randomization
+    .factorial([assetPaths.audio], 1)
+    .map((x) => x[0])
+    .filter((path) => !path.includes('test'))
 
   const stimLength = stimData.length
   const restCount = 5
@@ -74,7 +77,10 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
     const trial = genTaskBlock(stimData[stimId], stimId + 1, stimLength)
     trials = trials.concat(trial)
 
-    if ((stimId + 1) % restInterval === 0 && stimLength - stimId > restInterval) {
+    if (
+      (stimId + 1) % restInterval === 0 &&
+      stimLength - stimId > restInterval
+    ) {
       const restTrial = genRestTrial(restId, restCount)
       trials.push(restTrial)
       trials.push(genInstruction())
