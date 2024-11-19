@@ -1,5 +1,5 @@
 /**
- * @title metre_eval_exp
+ * @title beat_rate_exp
  * @description 音声聴取実験のテスト
  * @version 0.1.0
  *
