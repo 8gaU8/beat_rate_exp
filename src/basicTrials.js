@@ -2,12 +2,12 @@ import jsPsychFullscreen from '@jspsych/plugin-fullscreen'
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response'
 import PreloadPlugin from '@jspsych/plugin-preload'
 import AudioButtonResponsePlugin from '@jspsych/plugin-audio-button-response'
-import { genTaskTrials } from './taskTrials'
+import { genTaskTrials } from './audioTrials'
 
-const genAdjustVolumeTrial = () => {
+export const genAdjustVolumeTrial = (stimPath) => {
   const adjustVolumeTrial = {
     type: AudioButtonResponsePlugin,
-    stimulus: 'assets/test/volTest.wav',
+    stimulus: stimPath,
     prompt: `<p>ボリュームを調節してください</p>`,
     choices: ['もう一度再生する', '完了'],
     trial_ends_after_audio: false,
@@ -30,7 +30,7 @@ export const genPreloadTrial = (assetPaths) => {
   return preload
 }
 
-const genWelcomeTrial = (resultFileName) => {
+export const genWelcomeTrial = (resultFileName) => {
   const welcome = {
     type: HtmlButtonResponsePlugin,
     stimulus: `<p>実験中はネットワークが切れない安定な環境で実験を行って下さい</p>
@@ -40,7 +40,7 @@ const genWelcomeTrial = (resultFileName) => {
   return welcome
 }
 
-const genFullScreenTrial = () => {
+export const genFullScreenTrial = () => {
   const fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
@@ -50,7 +50,7 @@ const genFullScreenTrial = () => {
   return fullscreen
 }
 
-const genEndMessage = (resultFileName) => {
+export const genEndMessage = (resultFileName) => {
   const trial = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {

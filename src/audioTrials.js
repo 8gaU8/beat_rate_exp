@@ -64,7 +64,7 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
   const stimData = jsPsych.randomization
     .factorial([assetPaths.audio], 1)
     .map((x) => x[0])
-    .filter((path) => !path.includes('test'))
+    .filter((path) => path.split('/')[1] !== 'test')
 
   const stimLength = stimData.length
   const restCount = 5

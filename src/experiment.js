@@ -8,9 +8,29 @@
 
 // You can import stylesheets (.scss or .css).
 import { initJsPsych } from 'jspsych'
+import {
+  genAdjustVolumeTrial,
+  genEndMessage,
+  genFullScreenTrial,
+  genPreloadTrial,
+  genWelcomeTrial,
+} from './basicTrials'
+import { genTaskTrials } from './audioTrials'
 import '../styles/main.scss'
 
-import { buildTimeline } from './trials'
+const buildTimeline = (jsPsych, resultFileName, assetPaths) => {
+  const preload = genPreloadTrial(assetPaths)
+  const welcome = genWelcomeTrial(resultFileName)
+  const fullscreen = genFullScreenTrial()
+  const adjutVolumeLoop = genAdjustVolumeTrial('assets/test/volTest.wav')
+  const taskTrials = genTaskTrials(jsPsych, assetPaths)
+  const endMessage = genEndMessage(resultFileName)
+
+  let timeline = [preload, welcome, fullscreen, adjutVolumeLoop]
+  timeline = timeline.concat(taskTrials)
+  timeline.push(endMessage)
+  return timeline
+}
 
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
