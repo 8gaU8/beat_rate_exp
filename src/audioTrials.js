@@ -71,7 +71,7 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
     .filter((path) => path.split('/')[1] !== 'test')
 
   const stimLength = stimData.length
-  const restCount = 5
+  const restCount = 4
   const restInterval = Math.trunc(stimLength / restCount)
 
   let trials = [genInstruction()]
