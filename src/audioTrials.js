@@ -71,8 +71,8 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
     .filter((path) => path.split('/')[1] !== 'test')
 
   const stimLength = stimData.length
-  const restCount = 4
-  const restInterval = Math.trunc(stimLength / restCount)
+  const restCount = 3
+  const restInterval = Math.trunc(stimLength / (restCount + 1))
 
   let trials = [genInstruction()]
   let restId = 1
@@ -85,7 +85,7 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
       (stimId + 1) % restInterval === 0 &&
       stimLength - stimId > restInterval
     ) {
-      const restTrial = genRestTrial(restId, restCount)
+      const restTrial = genRestTrial(restId, restCount + 1)
       trials.push(restTrial)
       trials.push(genInstruction())
       restId += 1
