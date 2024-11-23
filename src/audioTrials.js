@@ -1,13 +1,14 @@
 import AudioKeyboardResponsePlugin from '@jspsych/plugin-audio-keyboard-response'
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response'
 import SurveyLikertPlugin from '@jspsych/plugin-survey-likert'
+import { t } from 'i18next'
 
 const genInstruction = () => {
   const instruction = {
     type: HtmlButtonResponsePlugin,
-    stimulus: `<p>ピアノ音声が再生されます</p>
-      <p>ビート感を感じる度合いを7段階で評価してください</p>`,
-    choices: ['開始'],
+    stimulus: `<p>${t('playPiano')}</p>
+      <p>${t('rateLikert')}</p>`,
+    choices: [t('start')],
   }
   return instruction
 }
@@ -15,8 +16,8 @@ const genInstruction = () => {
 const genRestTrial = (restId, restCount) => {
   const restTrial = {
     type: HtmlButtonResponsePlugin,
-    stimulus: `<p>休憩 (${restId}/${restCount})</p>`,
-    choices: ['再開'],
+    stimulus: `<p>${t('rest')} (${restId}/${restCount})</p>`,
+    choices: [t('resume')],
   }
   return restTrial
 }
@@ -31,20 +32,22 @@ const genTaskBlock = (stimPath, stimId, stimLength) => {
   }
 
   const likertScale7 = [
-    'Strongly Agree',
-    'Agree',
-    'Somewhat Agree',
-    'Neutral',
-    'Somewhat Disagree',
-    'Disagree',
-    'Strongly Disagree',
+    t('Likert1'),
+    t('Likert2'),
+    t('Likert3'),
+    t('Likert4'),
+    t('Likert5'),
+    t('Likert6'),
+    t('Likert7'),
   ]
   const answerTrial = {
     type: SurveyLikertPlugin,
     questions: [
       {
-        prompt: `Do you feel Beat? (${stimId}/${stimLength})`,
+        prompt: `${t('doYouFeelBeat')} 
+        (${stimId}/${stimLength})`,
         labels: likertScale7,
+        button_label: t('continue'),
       },
     ],
     on_finish: (data) => {
@@ -64,6 +67,7 @@ export const genTaskTrials = (jsPsych, assetPaths) => {
   const stimData = jsPsych.randomization
     .factorial([assetPaths.audio], 1)
     .map((x) => x[0])
+    .filter((path) => path.split('/')[1] !== 'locales')
     .filter((path) => path.split('/')[1] !== 'test')
 
   const stimLength = stimData.length
