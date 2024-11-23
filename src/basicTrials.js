@@ -1,15 +1,28 @@
 import jsPsychFullscreen from '@jspsych/plugin-fullscreen'
+import { t, changeLanguage } from 'i18next'
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response'
 import PreloadPlugin from '@jspsych/plugin-preload'
 import AudioButtonResponsePlugin from '@jspsych/plugin-audio-button-response'
-import { genTaskTrials } from './audioTrials'
+
+export function genChoseLanguage() {
+  const choseLanguage = {
+    type: HtmlButtonResponsePlugin,
+    stimulus: '<p>Chose language / 言語を選択してください:</p>',
+    choices: ['ja', 'en'],
+    on_finish: (data) => {
+      if (data.response === 0) changeLanguage('ja')
+      else changeLanguage('en')
+    },
+  }
+  return choseLanguage
+}
 
 export const genAdjustVolumeTrial = (stimPath) => {
   const adjustVolumeTrial = {
     type: AudioButtonResponsePlugin,
     stimulus: stimPath,
-    prompt: `<p>ボリュームを調節してください</p>`,
-    choices: ['もう一度再生する', '完了'],
+    prompt: `<p>${t('volume')}</p>`,
+    choices: [t('play_again'), t('complete')],
     trial_ends_after_audio: false,
   }
   const adjutVolumeLoop = {
@@ -25,7 +38,7 @@ export const genAdjustVolumeTrial = (stimPath) => {
 export const genPreloadTrial = (assetPaths) => {
   const preload = {
     type: PreloadPlugin,
-    audio: assetPaths.audio,
+    audio: assetPaths.eaudio,
   }
   return preload
 }
@@ -33,9 +46,9 @@ export const genPreloadTrial = (assetPaths) => {
 export const genWelcomeTrial = (resultFileName) => {
   const welcome = {
     type: HtmlButtonResponsePlugin,
-    stimulus: `<p>実験中はネットワークが切れない安定な環境で実験を行って下さい</p>
-    <p>実験が終了したら${resultFileName}を実験者に共有してください</p>`,
-    choices: ['確認'],
+    stimulus: `<p>${t('atFinishedEXP')} ${t('shareFile')}</p>
+    <p>${resultFileName}</p>`,
+    choices: [t('confirm')],
   }
   return welcome
 }
@@ -44,8 +57,8 @@ export const genFullScreenTrial = () => {
   const fullscreen = {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
-    message: '<p>実験はフルスクリーンで行います</p>',
-    button_label: '確認',
+    message: `<p>${t('fullScr')}</p>`,
+    button_label: t('confirm'),
   }
   return fullscreen
 }
@@ -54,25 +67,11 @@ export const genEndMessage = (resultFileName) => {
   const trial = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {
-      if (!navigator.onLine) return '<p>ネットワークから切断されました。<p>'
-      return `<p>実験は正常に終了しました</p>
-      <p>${resultFileName} を実験者に共有してください<p>`
+      if (!navigator.onLine) return `<p>t['']<p>`
+      return `<p>${t('expFinished')}</p>
+      <p>${t('shareFile')}: ${resultFileName} <p>`
     },
-    choices: ['確認'],
+    choices: [t('confirm')],
   }
   return trial
-}
-
-export const buildTimeline = (jsPsych, resultFileName, assetPaths) => {
-  const preload = genPreloadTrial(assetPaths)
-  const welcome = genWelcomeTrial(resultFileName)
-  const fullscreen = genFullScreenTrial()
-  const adjutVolumeLoop = genAdjustVolumeTrial()
-  const taskTrials = genTaskTrials(jsPsych, assetPaths)
-  const endMessage = genEndMessage(resultFileName)
-
-  let timeline = [preload, welcome, fullscreen, adjutVolumeLoop]
-  timeline = timeline.concat(taskTrials)
-  timeline.push(endMessage)
-  return timeline
 }
