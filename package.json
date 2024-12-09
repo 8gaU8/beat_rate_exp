@@ -6,6 +6,7 @@
     "jspsych": "jspsych -e experiment",
     "start": "npm run jspsych -- run",
     "build": "npm run jspsych -- build",
+    "prebuild": "./scripts/run.sh",
     "jatos": "npm run jspsych -- build --jatos",
     "format": "prettier --write src/**/*",
     "lint": "eslint --fix src/**/*",
